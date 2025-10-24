@@ -27,32 +27,45 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Logo and Branding */}
-        <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-indigo-600 rounded-xl flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="h-screen w-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex overflow-hidden">
+      {/* Left Side - Logo and Branding */}
+      <div className="w-1/2 flex flex-col items-center justify-center p-12 relative">
+        {/* Background Animation Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="relative z-10 text-center">
+          <div className="mx-auto w-24 h-24 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-3xl flex items-center justify-center mb-8 shadow-2xl">
+            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Bytes Sales</h1>
-          <p className="text-gray-600">Streamline your sales calling workflow</p>
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-6">
+            Bytes Sales
+          </h1>
+          <p className="text-gray-600 text-2xl">Streamline your sales calling workflow</p>
         </div>
+      </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Welcome back</h2>
-            <p className="text-gray-600">Sign in to continue to your dashboard</p>
-          </div>
+      {/* Right Side - Login Form */}
+      <div className="w-1/2 flex items-center justify-center p-12">
+        <div className="w-full max-w-md">
 
-          {/* Google Sign In Button */}
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          {/* Login Card */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-10 border border-white/20">
+            <div className="text-center mb-10">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Welcome back</h2>
+              <p className="text-gray-600 text-xl">Sign in to continue to your dashboard</p>
+            </div>
+
+            {/* Google Sign In Button */}
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+              className="group w-full flex items-center justify-center px-8 py-5 border-2 border-gray-200 rounded-2xl shadow-lg bg-white text-lg font-semibold text-gray-700 hover:bg-gray-50 hover:border-indigo-300 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 mb-6"
+            >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin mr-3" />
             ) : (
@@ -78,52 +91,22 @@ export default function LoginPage() {
             {isLoading ? "Signing in..." : "Continue with Google"}
           </button>
 
-          {/* Demo Sign In Button */}
-          <button
-            onClick={handleDemoSignIn}
-            className="w-full flex items-center justify-center px-4 py-3 border border-indigo-300 rounded-lg shadow-sm bg-indigo-50 text-sm font-medium text-indigo-700 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors mt-3"
-          >
+            {/* Demo Sign In Button */}
+            <button
+              onClick={handleDemoSignIn}
+              className="group w-full flex items-center justify-center px-8 py-5 border-2 border-indigo-300 rounded-2xl shadow-lg bg-gradient-to-r from-indigo-50 to-blue-50 text-lg font-semibold text-indigo-700 hover:bg-gradient-to-r hover:from-indigo-100 hover:to-blue-100 hover:border-indigo-400 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+            >
             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             Try Demo Mode
           </button>
 
-          {/* Features List */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">What you can do:</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center">
-                <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Upload and manage contact lists
-              </li>
-              <li className="flex items-center">
-                <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Make automated calls with 3CX integration
-              </li>
-              <li className="flex items-center">
-                <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Send follow-up emails from your Gmail
-              </li>
-              <li className="flex items-center">
-                <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Track deals and conversion metrics
-              </li>
-            </ul>
+            {/* Footer */}
+            <div className="text-center mt-8 text-sm text-gray-500">
+              <p className="opacity-80">By signing in, you agree to our <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer underline">Terms of Service</span> and <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer underline">Privacy Policy</span></p>
+            </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-gray-500">
-          <p>By signing in, you agree to our Terms of Service and Privacy Policy</p>
         </div>
       </div>
     </div>
