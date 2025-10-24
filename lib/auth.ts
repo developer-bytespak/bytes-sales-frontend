@@ -1,10 +1,8 @@
-import { NextAuthOptions } from 'next-auth';
-
-// Next-auth configuration
-export const authOptions: NextAuthOptions = {
+// Next-auth v5 configuration
+export const authConfig = {
   // Auth configuration will be implemented here
   providers: [],
   callbacks: {},
 };
 
-export default authOptions;
+export default authConfig;
