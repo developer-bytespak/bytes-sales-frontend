@@ -105,7 +105,6 @@ const statusColors = {
 export default function ContactsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [companyFilter, setCompanyFilter] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
 
@@ -115,9 +114,8 @@ export default function ContactsPage() {
                          contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          contact.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || contact.status === statusFilter;
-    const matchesCompany = companyFilter === "" || contact.company.toLowerCase().includes(companyFilter.toLowerCase());
     
-    return matchesSearch && matchesStatus && matchesCompany;
+    return matchesSearch && matchesStatus;
   });
 
   const formatCurrency = (amount: number) => {
@@ -247,80 +245,67 @@ export default function ContactsPage() {
           </Card>
         </div>
 
-        {/* Filters and Actions */}
+        {/* Filters */}
         <Card className="mb-6">
           <CardHeader>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Search */}
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    placeholder="Search contacts..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <svg className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-
-                {/* Status Filter */}
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="all">All Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="lead">Lead</option>
-                  <option value="customer">Customer</option>
-                </select>
-
-                {/* Company Filter */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              {/* Search */}
+              <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Filter by company..."
-                  value={companyFilter}
-                  onChange={(e) => setCompanyFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Search contacts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+                <svg className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </div>
 
-              <div className="flex items-center space-x-2">
-                {/* View Mode Toggle */}
-                <div className="flex border border-gray-300 rounded-lg">
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    className={`px-3 py-2 text-sm font-medium rounded-l-lg ${
-                      viewMode === "grid"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    Grid
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`px-3 py-2 text-sm font-medium rounded-r-lg ${
-                      viewMode === "list"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    List
-                  </button>
-                </div>
+              {/* Status Filter */}
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="lead">Lead</option>
+                <option value="customer">Customer</option>
+              </select>
 
-                <Button className="bg-blue-600 hover:bg-blue-700">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m0-6H6" />
-                  </svg>
-                  New Contact
-                </Button>
+              {/* View Mode Toggle */}
+              <div className="flex border border-gray-300 rounded-lg">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`px-3 py-2 text-sm font-medium rounded-l-lg ${
+                    viewMode === "grid"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  Grid
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`px-3 py-2 text-sm font-medium rounded-r-lg ${
+                    viewMode === "list"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  List
+                </button>
               </div>
+
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m0-6H6" />
+                </svg>
+                New Contact
+              </Button>
             </div>
           </CardHeader>
         </Card>

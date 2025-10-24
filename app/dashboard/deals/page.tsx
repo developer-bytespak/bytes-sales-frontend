@@ -244,97 +244,93 @@ export default function DealsPage() {
         </div>
 
 
-        {/* Filters and Actions */}
+        {/* Filters */}
         <Card className="mb-6">
           <CardHeader>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Search */}
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    placeholder="Search deals..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <svg className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-
-                {/* Stage Filter */}
-                <select
-                  value={stageFilter}
-                  onChange={(e) => setStageFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="all">All Stages</option>
-                  <option value="lead">Lead</option>
-                  <option value="qualified">Qualified</option>
-                  <option value="proposal">Proposal</option>
-                  <option value="negotiation">Negotiation</option>
-                  <option value="closed-won">Closed Won</option>
-                  <option value="closed-lost">Closed Lost</option>
-                </select>
-
-                {/* Owner Filter */}
-                <select
-                  value={ownerFilter}
-                  onChange={(e) => setOwnerFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="all">All Owners</option>
-                  <option value="Alex Smith">Alex Smith</option>
-                  <option value="Sarah Wilson">Sarah Wilson</option>
-                  <option value="John Doe">John Doe</option>
-                </select>
-
-                {/* Value Filter */}
-                <select
-                  value={valueFilter}
-                  onChange={(e) => setValueFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="all">All Values</option>
-                  <option value="small">Small (&lt; $10k)</option>
-                  <option value="medium">Medium ($10k - $50k)</option>
-                  <option value="large">Large (&gt; $50k)</option>
-                </select>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              {/* Search */}
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Search deals..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <svg className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </div>
 
-              <div className="flex items-center space-x-2">
-                {/* View Mode Toggle */}
-                <div className="flex border border-gray-300 rounded-lg">
-                  <button
-                    onClick={() => setViewMode("pipeline")}
-                    className={`px-3 py-2 text-sm font-medium rounded-l-lg ${
-                      viewMode === "pipeline"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    Pipeline
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`px-3 py-2 text-sm font-medium rounded-r-lg ${
-                      viewMode === "list"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    List
-                  </button>
-                </div>
+              {/* Stage Filter */}
+              <select
+                value={stageFilter}
+                onChange={(e) => setStageFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Stages</option>
+                <option value="lead">Lead</option>
+                <option value="qualified">Qualified</option>
+                <option value="proposal">Proposal</option>
+                <option value="negotiation">Negotiation</option>
+                <option value="closed-won">Closed Won</option>
+                <option value="closed-lost">Closed Lost</option>
+              </select>
 
-                <Button className="bg-blue-600 hover:bg-blue-700">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m0-6H6" />
-                  </svg>
-                  New Deal
-                </Button>
+              {/* Owner Filter */}
+              <select
+                value={ownerFilter}
+                onChange={(e) => setOwnerFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Owners</option>
+                <option value="Alex Smith">Alex Smith</option>
+                <option value="Sarah Wilson">Sarah Wilson</option>
+                <option value="John Doe">John Doe</option>
+              </select>
+
+              {/* Value Filter */}
+              <select
+                value={valueFilter}
+                onChange={(e) => setValueFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Values</option>
+                <option value="small">Small (&lt; $10k)</option>
+                <option value="medium">Medium ($10k - $50k)</option>
+                <option value="large">Large (&gt; $50k)</option>
+              </select>
+
+              {/* View Mode Toggle */}
+              <div className="flex border border-gray-300 rounded-lg">
+                <button
+                  onClick={() => setViewMode("pipeline")}
+                  className={`px-3 py-2 text-sm font-medium rounded-l-lg ${
+                    viewMode === "pipeline"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  Pipeline
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`px-3 py-2 text-sm font-medium rounded-r-lg ${
+                    viewMode === "list"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  List
+                </button>
               </div>
+
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m0-6H6" />
+                </svg>
+                New Deal
+              </Button>
             </div>
           </CardHeader>
         </Card>
