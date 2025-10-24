@@ -120,8 +120,8 @@ export default function EmailTemplatesPage() {
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Email Templates</h1>
-          <p className="text-gray-600 mt-2">Create and manage email templates for your sales campaigns</p>
+          <h1 className="text-3xl font-bold text-gray-900">Email Templates</h1>
+          <p className="text-gray-600 mt-2 text-base">Create and manage email templates for your sales campaigns</p>
         </div>
 
         {/* Stats Cards */}

@@ -159,8 +159,8 @@ export default function LeadsPage() {
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Leads</h1>
-          <p className="text-gray-600 mt-2">Manage your contact list and start calling campaigns</p>
+          <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
+          <p className="text-gray-600 mt-2 text-base">Manage your contact list and start calling campaigns</p>
         </div>
 
         {/* Toolbar */}

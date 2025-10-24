@@ -185,8 +185,8 @@ export default function DealsPage() {
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Deals Pipeline</h1>
-          <p className="text-gray-600 mt-2">Manage your sales pipeline and track deal progress</p>
+          <h1 className="text-3xl font-bold text-gray-900">Deals Pipeline</h1>
+          <p className="text-gray-600 mt-2 text-base">Manage your sales pipeline and track deal progress</p>
         </div>
 
         {/* Stats Cards */}

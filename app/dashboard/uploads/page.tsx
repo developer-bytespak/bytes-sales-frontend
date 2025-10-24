@@ -100,8 +100,8 @@ export default function UploadsPage() {
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Upload History</h1>
-          <p className="text-gray-600 mt-2">View and manage your CSV uploads</p>
+          <h1 className="text-3xl font-bold text-gray-900">Upload History</h1>
+          <p className="text-gray-600 mt-2 text-base">View and manage your CSV uploads</p>
         </div>
 
         {/* Filters */}

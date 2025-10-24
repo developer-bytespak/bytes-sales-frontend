@@ -74,15 +74,15 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-3 sm:p-4">
+      <div className="p-2 sm:p-3">
         {/* Header */}
-        <div className="mb-4">
+        <div className="mb-3">
           <div className="flex items-center justify-between">
     <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Dashboard
               </h1>
-              <p className="text-gray-600 mt-1 text-sm">Welcome back! Here's what's happening with your sales today.</p>
+              <p className="text-gray-600 mt-2 text-base">Welcome back! Here's what's happening with your sales today.</p>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -92,7 +92,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer border-l-4 border-l-blue-500 hover:border-l-blue-600">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
               <CardTitle className="text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Calls Made Today</CardTitle>
@@ -163,7 +163,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Card className="hover:shadow-lg transition-all duration-300">
             <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
               <CardTitle className="flex items-center space-x-2">
@@ -172,12 +172,12 @@ export default function DashboardPage() {
               </CardTitle>
               <CardDescription>Latest actions from your team</CardDescription>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-3">
+            <CardContent className="p-3">
+              <div className="space-y-2">
                 {recentActivity.map((activity, index) => (
                   <div 
                     key={activity.id} 
-                    className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-all duration-200 group"
+                    className="flex items-start space-x-3 p-1.5 rounded-lg hover:bg-gray-50 transition-all duration-200 group"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="flex-shrink-0">

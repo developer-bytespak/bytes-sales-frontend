@@ -116,8 +116,8 @@ export default function AnalyticsPage() {
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Sales Analytics</h1>
-          <p className="text-gray-600 mt-2">Track your sales performance and key metrics</p>
+          <h1 className="text-3xl font-bold text-gray-900">Sales Analytics</h1>
+          <p className="text-gray-600 mt-2 text-base">Track your sales performance and key metrics</p>
         </div>
 
         {/* Time Range Selector */}

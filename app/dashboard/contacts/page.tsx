@@ -189,8 +189,8 @@ export default function ContactsPage() {
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Contacts</h1>
-          <p className="text-gray-600 mt-2">Manage your CRM contacts and relationships</p>
+          <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
+          <p className="text-gray-600 mt-2 text-base">Manage your CRM contacts and relationships</p>
         </div>
 
         {/* Stats Cards */}
