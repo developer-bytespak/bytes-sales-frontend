@@ -414,70 +414,110 @@ export default function LeadsPage() {
 
             {/* Lead Details Modal */}
             {showLeadDetails && selectedLeadForDetails && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                {/* Overlay */}
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+                {/* Blurry Background Overlay */}
                 <div 
-                  className="absolute inset-0 bg-black bg-opacity-50"
+                  className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
                   onClick={handleCloseLeadDetails}
                 />
                 
                 {/* Modal */}
-                <div className="relative bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                  <div className="p-6">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Lead Details</h2>
-                        <p className="text-gray-600">View and manage lead information</p>
+                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-4xl w-full h-[90vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+                  {/* Header - Fixed */}
+                  <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                          <span className="text-lg font-bold text-white">
+                            {selectedLeadForDetails.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900">{selectedLeadForDetails.name}</h2>
+                          <p className="text-gray-600">{selectedLeadForDetails.company}</p>
+                        </div>
                       </div>
                       <button
                         onClick={handleCloseLeadDetails}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
                       >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
                     </div>
+                  </div>
 
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto p-4">
                     {/* Lead Information */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       {/* Basic Info */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Name</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                          <label className="text-sm font-medium text-gray-500 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Name
+                          </label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {selectedLeadForDetails.name}
                           </p>
                         </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Company</label>
+                        <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                          <label className="text-sm font-medium text-gray-500 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            Company
+                          </label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {selectedLeadForDetails.company}
                           </p>
                         </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Phone</label>
+                        <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                          <label className="text-sm font-medium text-gray-500 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            Phone
+                          </label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {selectedLeadForDetails.phone}
                           </p>
                         </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Email</label>
+                        <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                          <label className="text-sm font-medium text-gray-500 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Email
+                          </label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {selectedLeadForDetails.email}
                           </p>
                         </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Status</label>
+                        <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                          <label className="text-sm font-medium text-gray-500 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Status
+                          </label>
                           <div className="mt-1">
                             <Badge variant={statusColors[selectedLeadForDetails.status as keyof typeof statusColors]}>
                               {selectedLeadForDetails.status.charAt(0).toUpperCase() + selectedLeadForDetails.status.slice(1)}
                             </Badge>
                           </div>
                         </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Last Contacted</label>
+                        <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                          <label className="text-sm font-medium text-gray-500 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Last Contacted
+                          </label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {selectedLeadForDetails.lastContacted ? new Date(selectedLeadForDetails.lastContacted).toLocaleDateString() : "Never"}
                           </p>
@@ -485,49 +525,60 @@ export default function LeadsPage() {
                       </div>
 
                       {/* Notes */}
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">Notes</label>
-                        <div className="mt-2 p-4 bg-gray-50 rounded-lg">
+                      <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                        <label className="text-sm font-medium text-gray-500 flex items-center mb-2">
+                          <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Notes
+                        </label>
+                        <div className="p-2 bg-white/50 rounded border border-gray-200/30">
                           <p className="text-gray-900">
                             {selectedLeadForDetails.notes || "No notes available for this lead."}
                           </p>
                         </div>
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                        <Button
-                          variant="outline"
-                          onClick={handleCloseLeadDetails}
-                          className="border-gray-300 hover:border-gray-400"
-                        >
-                          Close
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            handleCloseLeadDetails();
-                            handleCallLead(selectedLeadForDetails);
-                          }}
-                          className="bg-green-600 hover:bg-green-700"
-                        >
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          Call Now
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            handleCloseLeadDetails();
-                            handleEmailLead(selectedLeadForDetails);
-                          }}
-                          className="bg-blue-600 hover:bg-blue-700"
-                        >
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
-                          Send Email
-                        </Button>
-                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer - Fixed */}
+                  <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                    <div className="flex justify-end space-x-3">
+                      <Button
+                        variant="outline"
+                        onClick={handleCloseLeadDetails}
+                        className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Close
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleCloseLeadDetails();
+                          handleCallLead(selectedLeadForDetails);
+                        }}
+                        className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        Call Now
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleCloseLeadDetails();
+                          handleEmailLead(selectedLeadForDetails);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 hover:scale-105"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Send Email
+                      </Button>
                     </div>
                   </div>
                 </div>
