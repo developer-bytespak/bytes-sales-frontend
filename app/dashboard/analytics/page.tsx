@@ -271,27 +271,33 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Charts and Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           {/* Revenue Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Revenue Trend</CardTitle>
+          <Card className="hover:shadow-lg transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center space-x-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span>Revenue Trend</span>
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-4">
+              <div className="space-y-3">
                 {mockAnalytics.monthlyRevenue.map((month, index) => (
-                  <div key={month.month} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 text-sm font-medium text-gray-600">{month.month}</div>
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-500 h-2 rounded-full" 
-                          style={{ width: `${(month.revenue / 70000) * 100}%` }}
-                        ></div>
+                  <div key={month.month} className="hover:bg-blue-50 p-2 rounded transition-colors">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-700 w-8">{month.month}</span>
+                        <span className="text-xs text-gray-500">{month.deals} deals</span>
                       </div>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {formatCurrency(month.revenue)}
+                      </span>
                     </div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {formatCurrency(month.revenue)}
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+                        style={{ width: `${(month.revenue / 70000) * 100}%` }}
+                      ></div>
                     </div>
                   </div>
                 ))}
@@ -300,27 +306,33 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Stage Performance */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Pipeline Performance</CardTitle>
+          <Card className="hover:shadow-lg transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>Pipeline Performance</span>
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-4">
+              <div className="space-y-3">
                 {mockAnalytics.stagePerformance.map((stage, index) => (
-                  <div key={stage.stage} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-20 text-sm font-medium text-gray-600">
-                        {stage.stage.replace('-', ' ')}
+                  <div key={stage.stage} className="hover:bg-green-50 p-2 rounded transition-colors">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-700 w-16">
+                          {stage.stage.replace('-', ' ')}
+                        </span>
+                        <span className="text-xs text-gray-500">{stage.count} deals</span>
                       </div>
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-green-500 h-2 rounded-full" 
-                          style={{ width: `${stage.conversion}%` }}
-                        ></div>
-                      </div>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {stage.conversion}%
+                      </span>
                     </div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {stage.count} deals
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-500 h-2 rounded-full transition-all duration-500" 
+                        style={{ width: `${stage.conversion}%` }}
+                      ></div>
                     </div>
                   </div>
                 ))}
@@ -330,32 +342,44 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Top Performers and Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Top Performers */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Performers</CardTitle>
+          <Card className="hover:shadow-lg transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center space-x-2">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <span>Top Performers</span>
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-4">
+              <div className="space-y-3">
                 {mockAnalytics.topPerformers.map((performer, index) => (
-                  <div key={performer.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-blue-600">
-                          {performer.name.split(' ').map(n => n[0]).join('')}
-                        </span>
+                  <div key={performer.name} className="hover:bg-purple-50 p-3 rounded-lg transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                          index === 0 ? 'bg-yellow-100 text-yellow-700' :
+                          index === 1 ? 'bg-gray-100 text-gray-700' :
+                          index === 2 ? 'bg-orange-100 text-orange-700' :
+                          'bg-purple-100 text-purple-700'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-white">
+                            {performer.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">{performer.name}</div>
+                          <div className="text-xs text-gray-500">{performer.deals} deals • {performer.winRate}% win rate</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-medium text-gray-900">{performer.name}</div>
-                        <div className="text-sm text-gray-500">{performer.deals} deals</div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-gray-900">
+                          {formatCurrency(performer.revenue)}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-gray-900">
-                        {formatCurrency(performer.revenue)}
-                      </div>
-                      <div className="text-sm text-gray-500">{performer.winRate}% win rate</div>
                     </div>
                   </div>
                 ))}
@@ -364,29 +388,36 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+          <Card className="hover:shadow-lg transition-all duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center space-x-2">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                <span>Recent Activity</span>
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {mockAnalytics.recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 text-2xl">
-                      {getActivityIcon(activity.type)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">
-                        {activity.description}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {activity.user} • {activity.time}
-                      </p>
-                      {activity.value > 0 && (
-                        <p className="text-sm font-semibold text-green-600">
-                          {formatCurrency(activity.value)}
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                {mockAnalytics.recentActivity.map((activity, index) => (
+                  <div key={activity.id} className="hover:bg-orange-50 p-3 rounded-lg transition-colors">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                        <span className="text-sm">{getActivityIcon(activity.type)}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">
+                          {activity.description}
                         </p>
-                      )}
+                        <div className="flex items-center space-x-2 mt-1">
+                          <span className="text-xs text-gray-500">{activity.user}</span>
+                          <span className="text-xs text-gray-400">•</span>
+                          <span className="text-xs text-gray-500">{activity.time}</span>
+                          {activity.value > 0 && (
+                            <span className="text-xs font-medium text-green-600">
+                              {formatCurrency(activity.value)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
