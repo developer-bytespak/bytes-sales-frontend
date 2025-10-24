@@ -7,21 +7,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { navigation } from "@/lib/navigation";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: "📊" },
-  { name: "Leads", href: "/dashboard/leads", icon: "👥" },
-  { name: "Uploads", href: "/dashboard/uploads", icon: "📤" },
-  { name: "Calls", href: "/dashboard/calls", icon: "📞" },
-  { name: "Emails", href: "/dashboard/emails", icon: "📧" },
-  { name: "Deals", href: "/dashboard/deals", icon: "💰" },
-  { name: "Templates", href: "/dashboard/settings/templates", icon: "📝" },
-  { name: "Settings", href: "/dashboard/settings", icon: "⚙️" },
-];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -107,34 +98,43 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </nav>
 
-          {/* User section */}
-          <div className="border-t border-gray-200 p-3">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-gray-700">
-                  {session?.user?.name?.charAt(0) || "D"}
-                </span>
+              {/* User section */}
+              <div className="border-t border-gray-200 p-3">
+                <Link 
+                  href="/dashboard/profile"
+                  className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+                    <span className="text-sm font-bold text-white">
+                      {session?.user?.name?.charAt(0) || "D"}
+                    </span>
+                  </div>
+                  <div className="ml-3 flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-700 transition-colors">
+                      {session?.user?.name || "Demo User"}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {session?.user?.email || "demo@bytes-sales.com"}
+                    </p>
+                    <p className="text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                      View Profile →
+                    </p>
+                  </div>
+                </Link>
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.push("/auth/login")}
+                    className="text-gray-400 hover:text-gray-600"
+                    title="Sign Out"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </Button>
+                </div>
               </div>
-              <div className="ml-3 flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {session?.user?.name || "Demo User"}
-                </p>
-                <p className="text-xs text-gray-500 truncate">
-                  {session?.user?.email || "demo@bytes-sales.com"}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push("/auth/login")}
-                className="ml-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
 

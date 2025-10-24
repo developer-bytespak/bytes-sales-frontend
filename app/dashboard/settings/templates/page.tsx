@@ -61,11 +61,11 @@ const mockTemplates = [
 ];
 
 const categoryColors = {
-  "follow-up": "blue",
-  "demo": "green",
-  "pricing": "yellow",
-  "objection": "red",
-  "closing": "purple"
+  "follow-up": "info",
+  "demo": "success",
+  "pricing": "warning",
+  "objection": "error",
+  "closing": "default"
 } as const;
 
 export default function EmailTemplatesPage() {
