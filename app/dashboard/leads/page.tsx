@@ -84,14 +84,19 @@ export default function LeadsPage() {
     const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
     
     let matchesDate = true;
-    if (dateFilter !== "all" && lead.lastContacted) {
-      const contactDate = new Date(lead.lastContacted);
-      const now = new Date();
-      const daysDiff = Math.floor((now.getTime() - contactDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      if (dateFilter === "today" && daysDiff > 0) matchesDate = false;
-      if (dateFilter === "week" && daysDiff > 7) matchesDate = false;
-      if (dateFilter === "month" && daysDiff > 30) matchesDate = false;
+    if (dateFilter !== "all") {
+      // Only show leads that have been contacted and match the date criteria
+      if (!lead.lastContacted) {
+        matchesDate = false; // Exclude leads that have never been contacted
+      } else {
+        const contactDate = new Date(lead.lastContacted);
+        const now = new Date();
+        const daysDiff = Math.floor((now.getTime() - contactDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (dateFilter === "today" && daysDiff > 0) matchesDate = false;
+        if (dateFilter === "week" && daysDiff > 7) matchesDate = false;
+        if (dateFilter === "month" && daysDiff > 30) matchesDate = false;
+      }
     }
     
     return matchesSearch && matchesStatus && matchesDate;

@@ -13,7 +13,6 @@ export default function SettingsPage() {
     { id: "profile", name: "Profile", icon: "👤" },
     { id: "notifications", name: "Notifications", icon: "🔔" },
     { id: "integrations", name: "Integrations", icon: "🔗" },
-    { id: "billing", name: "Billing", icon: "💳" },
     { id: "security", name: "Security", icon: "🔒" },
   ];
 
@@ -229,66 +228,6 @@ export default function SettingsPage() {
               </Card>
             )}
 
-            {activeTab === "billing" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Billing & Subscription</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Current Plan</h4>
-                        <p className="text-sm text-gray-600">Professional Plan</p>
-                      </div>
-                      <Badge variant="success">Active</Badge>
-                    </div>
-                    <div className="mt-3">
-                      <span className="text-2xl font-bold text-gray-900">$99/month</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-gray-900">Plan Features</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Unlimited contacts
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Advanced analytics
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Email templates
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Priority support
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="flex space-x-3">
-                    <Button className="bg-blue-600 hover:bg-blue-700">
-                      Upgrade Plan
-                    </Button>
-                    <Button variant="outline">
-                      View Billing History
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {activeTab === "security" && (
               <Card>
