@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NotificationContainer, NotificationItem } from "@/components/ui/notification";
 
 // Mock data - in real app this would come from API
 const mockUploads = [
@@ -57,9 +59,11 @@ const statusColors = {
 } as const;
 
 export default function UploadsPage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   const filteredUploads = mockUploads.filter(upload => {
     const matchesSearch = upload.filename.toLowerCase().includes(searchTerm.toLowerCase());
@@ -93,6 +97,60 @@ export default function UploadsPage() {
   const getSuccessRate = (processed: number, total: number) => {
     if (total === 0) return 0;
     return Math.round((processed / total) * 100);
+  };
+
+  const addNotification = (notification: Omit<NotificationItem, "id">) => {
+    const id = Date.now().toString();
+    setNotifications(prev => [...prev, { ...notification, id }]);
+  };
+
+  const removeNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const handleViewContacts = (upload: any) => {
+    console.log("Viewing contacts for upload:", upload);
+    addNotification({
+      type: "info",
+      title: "Viewing Contacts",
+      message: `Opening contacts imported from ${upload.filename}. Showing ${upload.processedCount} successfully imported contacts.`,
+      duration: 4000
+    });
+    // TODO: Navigate to contacts page with filter for this upload
+    router.push("/dashboard/contacts");
+  };
+
+  const handleDownload = (upload: any) => {
+    console.log("Downloading file:", upload);
+    addNotification({
+      type: "success",
+      title: "Download Started",
+      message: `Downloading ${upload.filename} (${upload.fileSize}). The file will be saved to your downloads folder.`,
+      duration: 4000
+    });
+    // TODO: Implement actual file download
+    // For now, simulate download by creating a blob
+    const csvContent = `Name,Email,Phone,Company\nJohn Doe,john@example.com,555-1234,Acme Corp\nJane Smith,jane@example.com,555-5678,Tech Inc`;
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = upload.filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleDelete = (upload: any) => {
+    console.log("Deleting upload:", upload);
+    addNotification({
+      type: "warning",
+      title: "Delete Upload",
+      message: `Are you sure you want to delete ${upload.filename}? This action cannot be undone and will remove all associated data.`,
+      duration: 5000
+    });
+    // TODO: Implement actual delete functionality
   };
 
   return (
@@ -291,13 +349,22 @@ export default function UploadsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
-                            <button className="text-indigo-600 hover:text-indigo-900">
+                            <button 
+                              onClick={() => handleViewContacts(upload)}
+                              className="text-indigo-600 hover:text-indigo-900 px-2 py-1 rounded hover:bg-indigo-50 transition-colors"
+                            >
                               View Contacts
                             </button>
-                            <button className="text-gray-600 hover:text-gray-900">
+                            <button 
+                              onClick={() => handleDownload(upload)}
+                              className="text-gray-600 hover:text-gray-900 px-2 py-1 rounded hover:bg-gray-50 transition-colors"
+                            >
                               Download
                             </button>
-                            <button className="text-red-600 hover:text-red-900">
+                            <button 
+                              onClick={() => handleDelete(upload)}
+                              className="text-red-600 hover:text-red-900 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                            >
                               Delete
                             </button>
                           </div>
@@ -311,6 +378,11 @@ export default function UploadsPage() {
           </CardContent>
         </Card>
 
+        {/* Notification Container */}
+        <NotificationContainer 
+          notifications={notifications} 
+          onRemove={removeNotification} 
+        />
       </div>
     </DashboardLayout>
   );
