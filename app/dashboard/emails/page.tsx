@@ -5,6 +5,8 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { EmailComposer } from "@/components/email/email-composer";
+import { NotificationContainer, NotificationItem } from "@/components/ui/notification";
 
 // Mock data - in real app this would come from API
 const mockEmails = [
@@ -99,6 +101,11 @@ export default function EmailsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [templateFilter, setTemplateFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
+  const [showEmailComposer, setShowEmailComposer] = useState(false);
+  const [selectedEmailForComposer, setSelectedEmailForComposer] = useState<any>(null);
+  const [showEmailDetails, setShowEmailDetails] = useState(false);
+  const [selectedEmailForDetails, setSelectedEmailForDetails] = useState<any>(null);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   const filteredEmails = mockEmails.filter(email => {
     const matchesSearch = email.recipientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -150,6 +157,59 @@ export default function EmailsPage() {
   };
 
   const stats = getEmailStats();
+
+  const addNotification = (notification: Omit<NotificationItem, "id">) => {
+    const id = Date.now().toString();
+    setNotifications(prev => [...prev, { ...notification, id }]);
+  };
+
+  const removeNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const handleViewEmail = (email: any) => {
+    setSelectedEmailForDetails(email);
+    setShowEmailDetails(true);
+  };
+
+  const handleCloseEmailDetails = () => {
+    setShowEmailDetails(false);
+    setSelectedEmailForDetails(null);
+  };
+
+  const handleReplyEmail = (email: any) => {
+    setSelectedEmailForComposer({
+      ...email,
+      subject: `Re: ${email.subject}`,
+      body: `\n\n--- Original Message ---\nFrom: ${email.recipientName} <${email.recipientEmail}>\nSubject: ${email.subject}\n\n${email.body}`
+    });
+    setShowEmailComposer(true);
+  };
+
+  const handleForwardEmail = (email: any) => {
+    setSelectedEmailForComposer({
+      ...email,
+      subject: `Fwd: ${email.subject}`,
+      body: `\n\n--- Forwarded Message ---\nFrom: ${email.recipientName} <${email.recipientEmail}>\nSubject: ${email.subject}\n\n${email.body}`
+    });
+    setShowEmailComposer(true);
+  };
+
+  const handleCloseEmailComposer = () => {
+    setShowEmailComposer(false);
+    setSelectedEmailForComposer(null);
+  };
+
+  const handleSendEmail = (emailData: any) => {
+    console.log("Sending email:", emailData);
+    addNotification({
+      type: "success",
+      title: "Email Sent",
+      message: `Email sent to ${emailData.to}! This would normally send via Gmail API.`,
+      duration: 4000
+    });
+    handleCloseEmailComposer();
+  };
 
   return (
     <DashboardLayout>
@@ -361,13 +421,22 @@ export default function EmailsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
-                            <button className="text-blue-600 hover:text-blue-900">
+                            <button 
+                              onClick={() => handleViewEmail(email)}
+                              className="text-blue-600 hover:text-blue-900 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                            >
                               View
                             </button>
-                            <button className="text-green-600 hover:text-green-900">
+                            <button 
+                              onClick={() => handleReplyEmail(email)}
+                              className="text-green-600 hover:text-green-900 px-2 py-1 rounded hover:bg-green-50 transition-colors"
+                            >
                               Reply
                             </button>
-                            <button className="text-gray-600 hover:text-gray-900">
+                            <button 
+                              onClick={() => handleForwardEmail(email)}
+                              className="text-gray-600 hover:text-gray-900 px-2 py-1 rounded hover:bg-gray-50 transition-colors"
+                            >
                               Forward
                             </button>
                           </div>
@@ -380,6 +449,219 @@ export default function EmailsPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Email Composer */}
+        <EmailComposer
+          isOpen={showEmailComposer}
+          onClose={handleCloseEmailComposer}
+          selectedLead={selectedEmailForComposer}
+          onSend={handleSendEmail}
+        />
+
+        {/* Email Details Modal */}
+        {showEmailDetails && selectedEmailForDetails && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            {/* Blurry Background Overlay */}
+            <div 
+              className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
+              onClick={handleCloseEmailDetails}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-4xl w-full h-[90vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+              {/* Header - Fixed */}
+              <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Email Details</h2>
+                      <p className="text-gray-600">{selectedEmailForDetails.subject}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCloseEmailDetails}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Email Information */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                      <label className="text-sm font-medium text-gray-500 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Recipient
+                      </label>
+                      <p className="text-lg font-semibold text-gray-900 mt-1">
+                        {selectedEmailForDetails.recipientName}
+                      </p>
+                      <p className="text-sm text-gray-600">{selectedEmailForDetails.recipientEmail}</p>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                      <label className="text-sm font-medium text-gray-500 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Company
+                      </label>
+                      <p className="text-lg font-semibold text-gray-900 mt-1">
+                        {selectedEmailForDetails.recipientCompany}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                      <label className="text-sm font-medium text-gray-500 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        Template
+                      </label>
+                      <p className="text-lg font-semibold text-gray-900 mt-1">
+                        {selectedEmailForDetails.templateName}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                      <label className="text-sm font-medium text-gray-500 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Status
+                      </label>
+                      <div className="mt-1">
+                        <Badge variant={statusColors[selectedEmailForDetails.status as keyof typeof statusColors]}>
+                          {selectedEmailForDetails.status.charAt(0).toUpperCase() + selectedEmailForDetails.status.slice(1)}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                      <label className="text-sm font-medium text-gray-500 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Sent Date
+                      </label>
+                      <p className="text-lg font-semibold text-gray-900 mt-1">
+                        {formatDate(selectedEmailForDetails.sentDate)}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50 hover:bg-gray-100/50 transition-colors">
+                      <label className="text-sm font-medium text-gray-500 flex items-center">
+                        <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Engagement
+                      </label>
+                      <div className="mt-1 space-y-1">
+                        {selectedEmailForDetails.openedDate && (
+                          <span className="text-green-600 text-sm">✓ Opened</span>
+                        )}
+                        {selectedEmailForDetails.clickedDate && (
+                          <span className="text-blue-600 text-sm">🔗 Clicked</span>
+                        )}
+                        {selectedEmailForDetails.replyDate && (
+                          <span className="text-purple-600 text-sm">💬 Replied</span>
+                        )}
+                        {!selectedEmailForDetails.openedDate && !selectedEmailForDetails.clickedDate && !selectedEmailForDetails.replyDate && (
+                          <span className="text-gray-400 text-sm">No engagement</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Subject */}
+                  <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                    <label className="text-sm font-medium text-gray-500 flex items-center mb-2">
+                      <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                      Subject
+                    </label>
+                    <div className="p-2 bg-white/50 rounded border border-gray-200/30">
+                      <p className="text-gray-900 font-medium">
+                        {selectedEmailForDetails.subject}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Email Body */}
+                  <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                    <label className="text-sm font-medium text-gray-500 flex items-center mb-2">
+                      <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Email Content
+                    </label>
+                    <div className="p-3 bg-white/50 rounded border border-gray-200/30 max-h-60 overflow-y-auto">
+                      <pre className="text-gray-900 whitespace-pre-wrap font-sans text-sm">
+                        {selectedEmailForDetails.body}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer - Fixed */}
+              <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseEmailDetails}
+                    className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Close
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleCloseEmailDetails();
+                      handleReplyEmail(selectedEmailForDetails);
+                    }}
+                    className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                    </svg>
+                    Reply
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleCloseEmailDetails();
+                      handleForwardEmail(selectedEmailForDetails);
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 hover:scale-105"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                    Forward
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Notification Container */}
+        <NotificationContainer 
+          notifications={notifications} 
+          onRemove={removeNotification} 
+        />
       </div>
     </DashboardLayout>
   );

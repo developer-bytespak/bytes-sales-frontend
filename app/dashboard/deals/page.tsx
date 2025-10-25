@@ -99,7 +99,7 @@ const stageColors = {
   "lead": "default",
   "qualified": "info",
   "proposal": "warning",
-  "negotiation": "blue",
+  "negotiation": "info",
   "closed-won": "success",
   "closed-lost": "error"
 } as const;
@@ -112,6 +112,15 @@ export default function DealsPage() {
   const [ownerFilter, setOwnerFilter] = useState("all");
   const [valueFilter, setValueFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"pipeline" | "list">("pipeline");
+  
+  // Modal states
+  const [showDealDetails, setShowDealDetails] = useState(false);
+  const [selectedDealForDetails, setSelectedDealForDetails] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedDealForEdit, setSelectedDealForEdit] = useState<any>(null);
+  const [showMoveModal, setShowMoveModal] = useState(false);
+  const [selectedDealForMove, setSelectedDealForMove] = useState<any>(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   const filteredDeals = mockDeals.filter(deal => {
     const matchesSearch = deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -179,6 +188,71 @@ export default function DealsPage() {
   };
 
   const dealsByStage = getDealsByStage();
+
+  // Notification functions
+  const addNotification = (notification: any) => {
+    const id = Date.now().toString();
+    setNotifications(prev => [...prev, { ...notification, id }]);
+  };
+
+  const removeNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  // Deal action handlers
+  const handleViewDeal = (deal: any) => {
+    setSelectedDealForDetails(deal);
+    setShowDealDetails(true);
+  };
+
+  const handleCloseDealDetails = () => {
+    setShowDealDetails(false);
+    setSelectedDealForDetails(null);
+  };
+
+  const handleEditDeal = (deal: any) => {
+    setSelectedDealForEdit(deal);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedDealForEdit(null);
+  };
+
+  const handleSaveDeal = (updatedDeal: any) => {
+    console.log("Saving deal:", updatedDeal);
+    addNotification({
+      type: "success",
+      title: "Deal Updated",
+      message: `Deal "${updatedDeal.title}" has been updated successfully.`,
+      duration: 4000
+    });
+    handleCloseEditModal();
+  };
+
+  const handleMoveDeal = (deal: any) => {
+    setSelectedDealForMove(deal);
+    setShowMoveModal(true);
+  };
+
+  const handleCloseMoveModal = () => {
+    setShowMoveModal(false);
+    setSelectedDealForMove(null);
+  };
+
+  const handleStageChange = (newStage: string) => {
+    if (selectedDealForMove) {
+      console.log(`Moving deal "${selectedDealForMove.title}" to stage: ${newStage}`);
+      addNotification({
+        type: "success",
+        title: "Deal Moved",
+        message: `Deal "${selectedDealForMove.title}" has been moved to ${newStage.replace('-', ' ')} stage.`,
+        duration: 4000
+      });
+      handleCloseMoveModal();
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -369,7 +443,7 @@ export default function DealsPage() {
                   {/* Deal Cards */}
                   <div className="space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
                     {dealsByStage[stage].map((deal) => (
-                      <Card key={deal.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-blue-500 hover:border-l-green-500">
+                      <Card key={deal.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-blue-500 hover:border-l-green-500" onClick={() => handleViewDeal(deal)}>
                         <CardContent className="p-4">
                           <div className="space-y-3">
                             {/* Deal Title and Company */}
@@ -401,7 +475,7 @@ export default function DealsPage() {
                               <div className="flex items-center space-x-1">
                                 <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
                                   <span className="text-xs font-medium text-gray-700">
-                                    {deal.owner.split(' ').map(n => n[0]).join('')}
+                                    {deal.owner.split(' ').map((n: string) => n[0]).join('')}
                                   </span>
                                 </div>
                                 <span className="text-gray-600">{deal.owner}</span>
@@ -411,7 +485,7 @@ export default function DealsPage() {
                             
                             {/* Tags */}
                             <div className="flex flex-wrap gap-1">
-                              {deal.tags.slice(0, 2).map((tag, index) => (
+                              {deal.tags.slice(0, 2).map((tag: string, index: number) => (
                                 <Badge key={index} variant="default" className="text-xs px-2 py-1">
                                   {tag}
                                 </Badge>
@@ -544,9 +618,9 @@ export default function DealsPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant={stageColors[deal.stage as keyof typeof stageColors]} className="font-medium">
-                              {deal.stage.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                            </Badge>
+                        <Badge variant={stageColors[deal.stage as keyof typeof stageColors]} className="font-medium">
+                          {deal.stage.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                        </Badge>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center space-x-2">
@@ -566,13 +640,22 @@ export default function DealsPage() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-1">
-                              <button className="text-blue-600 hover:text-blue-900 px-2 py-1 rounded hover:bg-blue-50 transition-colors">
+                              <button 
+                                onClick={() => handleViewDeal(deal)}
+                                className="text-blue-600 hover:text-blue-900 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                              >
                                 View
                               </button>
-                              <button className="text-green-600 hover:text-green-900 px-2 py-1 rounded hover:bg-green-50 transition-colors">
+                              <button 
+                                onClick={() => handleEditDeal(deal)}
+                                className="text-green-600 hover:text-green-900 px-2 py-1 rounded hover:bg-green-50 transition-colors"
+                              >
                                 Edit
                               </button>
-                              <button className="text-gray-600 hover:text-gray-900 px-2 py-1 rounded hover:bg-gray-50 transition-colors">
+                              <button 
+                                onClick={() => handleMoveDeal(deal)}
+                                className="text-gray-600 hover:text-gray-900 px-2 py-1 rounded hover:bg-gray-50 transition-colors"
+                              >
                                 Move
                               </button>
                             </div>
@@ -586,6 +669,479 @@ export default function DealsPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* Deal Details Modal */}
+        {showDealDetails && selectedDealForDetails && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            {/* Blurry Background Overlay */}
+            <div 
+              className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
+              onClick={handleCloseDealDetails}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-4xl w-full h-[90vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+              {/* Header - Fixed */}
+              <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                      <span className="text-lg font-bold text-white">
+                        {selectedDealForDetails.title.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">{selectedDealForDetails.title}</h2>
+                      <p className="text-gray-600">{selectedDealForDetails.company}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCloseDealDetails}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Deal Information */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                      <label className="text-sm font-medium text-gray-500">Deal Value</label>
+                      <p className="text-2xl font-bold text-gray-900 mt-1">
+                        {formatCurrency(selectedDealForDetails.value)}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                      <label className="text-sm font-medium text-gray-500">Probability</label>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-500 h-2 rounded-full" 
+                            style={{ width: `${selectedDealForDetails.probability}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-lg font-semibold text-gray-900">
+                          {selectedDealForDetails.probability}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                      <label className="text-sm font-medium text-gray-500">Stage</label>
+                      <div className="mt-1">
+                        <Badge variant={stageColors[selectedDealForDetails.stage as keyof typeof stageColors]}>
+                          {selectedDealForDetails.stage.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                      <label className="text-sm font-medium text-gray-500">Close Date</label>
+                      <p className="text-lg font-semibold text-gray-900 mt-1">
+                        {formatDate(selectedDealForDetails.closeDate)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Contact Information */}
+                  <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Contact Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Contact Name</label>
+                        <p className="text-lg font-semibold text-gray-900">{selectedDealForDetails.contact}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Email</label>
+                        <p className="text-lg font-semibold text-gray-900">{selectedDealForDetails.contactEmail}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Owner</label>
+                        <p className="text-lg font-semibold text-gray-900">{selectedDealForDetails.owner}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Source</label>
+                        <p className="text-lg font-semibold text-gray-900">{selectedDealForDetails.source}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">Tags</label>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedDealForDetails.tags.map((tag: string, index: number) => (
+                        <Badge key={index} variant="default" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div className="p-3 bg-gray-50/50 rounded-lg border border-gray-200/50">
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">Notes</label>
+                    <div className="p-3 bg-white/50 rounded border border-gray-200/30">
+                      <p className="text-gray-900">
+                        {selectedDealForDetails.notes || "No notes available for this deal."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer - Fixed */}
+              <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseDealDetails}
+                    className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleCloseDealDetails();
+                      handleEditDeal(selectedDealForDetails);
+                    }}
+                    className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                  >
+                    Edit Deal
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Deal Modal */}
+        {showEditModal && selectedDealForEdit && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            {/* Blurry Background Overlay */}
+            <div 
+              className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
+              onClick={handleCloseEditModal}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-2xl w-full h-[80vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+              {/* Header - Fixed */}
+              <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Edit Deal</h2>
+                      <p className="text-gray-600">{selectedDealForEdit.title}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCloseEditModal}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Deal Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Deal Title <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedDealForEdit.title}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Company */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Company <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedDealForEdit.company}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Contact */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Contact Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue={selectedDealForEdit.contact}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Contact Email <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        defaultValue={selectedDealForEdit.contactEmail}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Value and Stage */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Deal Value <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        defaultValue={selectedDealForEdit.value}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Stage
+                      </label>
+                      <select
+                        defaultValue={selectedDealForEdit.stage}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      >
+                        <option value="lead">Lead</option>
+                        <option value="qualified">Qualified</option>
+                        <option value="proposal">Proposal</option>
+                        <option value="negotiation">Negotiation</option>
+                        <option value="closed-won">Closed Won</option>
+                        <option value="closed-lost">Closed Lost</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Probability and Close Date */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Probability (%)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        defaultValue={selectedDealForEdit.probability}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Close Date
+                      </label>
+                      <input
+                        type="date"
+                        defaultValue={selectedDealForEdit.closeDate}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Owner and Source */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Owner
+                      </label>
+                      <select
+                        defaultValue={selectedDealForEdit.owner}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      >
+                        <option value="Alex Smith">Alex Smith</option>
+                        <option value="Sarah Wilson">Sarah Wilson</option>
+                        <option value="John Doe">John Doe</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Source
+                      </label>
+                      <select
+                        defaultValue={selectedDealForEdit.source}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      >
+                        <option value="Cold Call">Cold Call</option>
+                        <option value="Referral">Referral</option>
+                        <option value="Website">Website</option>
+                        <option value="Email Campaign">Email Campaign</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Notes
+                    </label>
+                    <textarea
+                      defaultValue={selectedDealForEdit.notes}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      placeholder="Add notes about this deal..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer - Fixed */}
+              <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseEditModal}
+                    className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => handleSaveDeal(selectedDealForEdit)}
+                    className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                  >
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Move Deal Modal */}
+        {showMoveModal && selectedDealForMove && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            {/* Blurry Background Overlay */}
+            <div 
+              className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
+              onClick={handleCloseMoveModal}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-md w-full border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+              {/* Header */}
+              <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">Move Deal</h2>
+                      <p className="text-gray-600">{selectedDealForMove.title}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCloseMoveModal}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Select the new stage for this deal:
+                  </p>
+                  {stageOrder.map((stage) => (
+                    <button
+                      key={stage}
+                      onClick={() => handleStageChange(stage)}
+                      className={`w-full p-3 text-left rounded-lg border transition-all duration-200 ${
+                        stage === selectedDealForMove.stage
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium capitalize">
+                          {stage.replace('-', ' ')}
+                        </span>
+                        {stage === selectedDealForMove.stage && (
+                          <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseMoveModal}
+                    className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Notification Container */}
+        <div className="fixed top-4 right-4 z-50 space-y-2">
+          {notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={`p-4 rounded-lg shadow-lg border-l-4 max-w-sm ${
+                notification.type === 'success' ? 'bg-green-50 border-green-500 text-green-800' :
+                notification.type === 'error' ? 'bg-red-50 border-red-500 text-red-800' :
+                notification.type === 'warning' ? 'bg-yellow-50 border-yellow-500 text-yellow-800' :
+                'bg-blue-50 border-blue-500 text-blue-800'
+              }`}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm">{notification.title}</h4>
+                  <p className="text-sm mt-1">{notification.message}</p>
+                </div>
+                <button
+                  onClick={() => removeNotification(notification.id)}
+                  className="ml-2 text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );
