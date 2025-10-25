@@ -74,6 +74,8 @@ export default function LeadsPage() {
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState<any>(null);
   const [showLeadDetails, setShowLeadDetails] = useState(false);
   const [selectedLeadForDetails, setSelectedLeadForDetails] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedLeadForEdit, setSelectedLeadForEdit] = useState<any>(null);
 
   const filteredLeads = mockLeads.filter(lead => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -149,6 +151,23 @@ export default function LeadsPage() {
   const handleCloseLeadDetails = () => {
     setShowLeadDetails(false);
     setSelectedLeadForDetails(null);
+  };
+
+  const handleEditLead = (lead: any) => {
+    setSelectedLeadForEdit(lead);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedLeadForEdit(null);
+  };
+
+  const handleSaveLead = (updatedLead: any) => {
+    console.log("Saving lead:", updatedLead);
+    // TODO: Implement actual save logic
+    alert(`Lead ${updatedLead.name} updated successfully!`);
+    handleCloseEditModal();
   };
 
   const handleSendEmail = (emailData: any) => {
@@ -376,7 +395,10 @@ export default function LeadsPage() {
                             >
                               View
                             </button>
-                            <button className="text-gray-600 hover:text-gray-900">
+                            <button 
+                              onClick={() => handleEditLead(lead)}
+                              className="text-gray-600 hover:text-gray-900"
+                            >
                               Edit
                             </button>
                           </div>
@@ -578,6 +600,152 @@ export default function LeadsPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                         Send Email
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Edit Lead Modal */}
+            {showEditModal && selectedLeadForEdit && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+                {/* Blurry Background Overlay */}
+                <div 
+                  className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
+                  onClick={handleCloseEditModal}
+                />
+                
+                {/* Modal */}
+                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-2xl w-full h-[80vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+                  {/* Header - Fixed */}
+                  <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900">Edit Lead</h2>
+                          <p className="text-gray-600">{selectedLeadForEdit.name}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleCloseEditModal}
+                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto p-4">
+                    <div className="space-y-4">
+                      {/* Name */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue={selectedLeadForEdit.name}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        />
+                      </div>
+
+                      {/* Email */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Email <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          defaultValue={selectedLeadForEdit.email}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        />
+                      </div>
+
+                      {/* Phone */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Phone <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          defaultValue={selectedLeadForEdit.phone}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        />
+                      </div>
+
+                      {/* Company */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Company <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue={selectedLeadForEdit.company}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        />
+                      </div>
+
+                      {/* Status */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Status
+                        </label>
+                        <select
+                          defaultValue={selectedLeadForEdit.status}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        >
+                          <option value="new">New</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="qualified">Qualified</option>
+                          <option value="converted">Converted</option>
+                        </select>
+                      </div>
+
+                      {/* Notes */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Notes
+                        </label>
+                        <textarea
+                          defaultValue={selectedLeadForEdit.notes}
+                          rows={4}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                          placeholder="Add notes about this lead..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer - Fixed */}
+                  <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                    <div className="flex justify-end space-x-3">
+                      <Button
+                        variant="outline"
+                        onClick={handleCloseEditModal}
+                        className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => handleSaveLead(selectedLeadForEdit)}
+                        className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Save Changes
                       </Button>
                     </div>
                   </div>
