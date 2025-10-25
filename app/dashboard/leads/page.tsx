@@ -429,7 +429,7 @@ export default function LeadsPage() {
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
                           <span className="text-lg font-bold text-white">
-                            {selectedLeadForDetails.name.split(' ').map(n => n[0]).join('')}
+                            {selectedLeadForDetails.name.split(' ').map((n: string) => n[0]).join('')}
                           </span>
                         </div>
                         <div>

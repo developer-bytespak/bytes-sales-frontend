@@ -142,43 +142,55 @@ export function EmailComposer({ isOpen, onClose, selectedLead, onSend }: EmailCo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Overlay */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+      {/* Blurry Background Overlay */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-50"
+        className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
         onClick={handleClose}
       />
       
       {/* Modal */}
-      <div className="relative bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-2xl font-bold text-gray-900">Compose Email</CardTitle>
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={() => setShowTemplateSelector(!showTemplateSelector)}
-                  variant="outline"
-                  size="sm"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Templates
-                </Button>
-                <button
-                  onClick={handleClose}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+      <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-4xl w-full h-[90vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+        {/* Header - Fixed */}
+        <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Compose Email</h2>
+                <p className="text-gray-600">{selectedLead ? `To: ${selectedLead.name}` : "New Email"}</p>
               </div>
             </div>
-          </CardHeader>
-          
-          <CardContent className="p-6 space-y-6">
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => setShowTemplateSelector(!showTemplateSelector)}
+                variant="outline"
+                size="sm"
+                className="border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Templates
+              </Button>
+              <button
+                onClick={handleClose}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4">
             {/* Template Selector */}
             {showTemplateSelector && (
               <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
@@ -305,48 +317,58 @@ export function EmailComposer({ isOpen, onClose, selectedLead, onSend }: EmailCo
               )}
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-              <div className="flex items-center space-x-4">
-                <Button
-                  onClick={handleClose}
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    // Save as draft functionality
-                    console.log("Save as draft");
-                  }}
-                  variant="outline"
-                >
-                  Save Draft
-                </Button>
-              </div>
-              
+        </div>
+
+        {/* Footer - Fixed */}
+        <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
               <Button
-                onClick={handleSend}
-                disabled={isSending || !to || !subject || !body}
-                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleClose}
+                variant="outline"
+                className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
               >
-                {isSending ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                    Send Email
-                  </>
-                )}
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  // Save as draft functionality
+                  console.log("Save as draft");
+                }}
+                variant="outline"
+                className="border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Save Draft
               </Button>
             </div>
-          </CardContent>
-        </Card>
+            
+            <Button
+              onClick={handleSend}
+              disabled={isSending || !to || !subject || !body}
+              className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 hover:scale-105"
+            >
+              {isSending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                  Send Email
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
