@@ -209,11 +209,11 @@ export default function DashboardPage() {
               <CardDescription>Get started with common tasks</CardDescription>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="space-y-3">
-                <Button className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <div className="space-y-5">
+                <Button className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group">
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                      <span className="text-lg">📤</span>
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                      <span className="text-xl">📤</span>
                     </div>
                     <span className="font-semibold">Upload CSV</span>
                   </div>
@@ -222,10 +222,10 @@ export default function DashboardPage() {
                   </svg>
                 </Button>
 
-                <Button className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+                <Button className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group">
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                      <span className="text-lg">📞</span>
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                      <span className="text-xl">📞</span>
                     </div>
                     <span className="font-semibold">Start Calling</span>
                   </div>
@@ -234,10 +234,10 @@ export default function DashboardPage() {
                   </svg>
                 </Button>
 
-                <Button className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+                <Button className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group">
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                      <span className="text-lg">📝</span>
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                      <span className="text-xl">📝</span>
                     </div>
                     <span className="font-semibold">Manage Templates</span>
                   </div>
