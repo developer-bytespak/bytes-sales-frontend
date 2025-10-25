@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ContactCard } from "@/components/crm/contact-card";
+import { CallControlPanel } from "@/components/call/call-control-panel";
+import { EmailComposer } from "@/components/email/email-composer";
+import { NotificationContainer, NotificationItem } from "@/components/ui/notification";
 
 // Mock data - in real app this would come from API
 const mockContacts = [
@@ -107,6 +110,13 @@ export default function ContactsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const [showCallPanel, setShowCallPanel] = useState(false);
+  const [selectedContactForCall, setSelectedContactForCall] = useState<any>(null);
+  const [showEmailComposer, setShowEmailComposer] = useState(false);
+  const [selectedContactForEmail, setSelectedContactForEmail] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedContactForEdit, setSelectedContactForEdit] = useState<any>(null);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   const filteredContacts = mockContacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -163,8 +173,8 @@ export default function ContactsPage() {
   };
 
   const handleEditContact = (contact: any) => {
-    console.log("Edit contact:", contact);
-    // TODO: Open edit modal
+    setSelectedContactForEdit(contact);
+    setShowEditModal(true);
   };
 
   const handleDeleteContact = (contactId: string) => {
@@ -173,13 +183,77 @@ export default function ContactsPage() {
   };
 
   const handleCallContact = (contact: any) => {
-    console.log("Call contact:", contact);
-    // TODO: Open call control panel
+    setSelectedContactForCall(contact);
+    setShowCallPanel(true);
   };
 
   const handleEmailContact = (contact: any) => {
-    console.log("Email contact:", contact);
-    // TODO: Open email composer
+    setSelectedContactForEmail(contact);
+    setShowEmailComposer(true);
+  };
+
+  const handleCloseCallPanel = () => {
+    setShowCallPanel(false);
+    setSelectedContactForCall(null);
+  };
+
+  const handleCloseEmailComposer = () => {
+    setShowEmailComposer(false);
+    setSelectedContactForEmail(null);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedContactForEdit(null);
+  };
+
+  const handleSaveContact = (updatedContact: any) => {
+    console.log("Saving contact:", updatedContact);
+    // TODO: Implement actual save logic
+    alert(`Contact ${updatedContact.name} updated successfully!`);
+    handleCloseEditModal();
+  };
+
+  const addNotification = (notification: Omit<NotificationItem, "id">) => {
+    const id = Date.now().toString();
+    setNotifications(prev => [...prev, { ...notification, id }]);
+  };
+
+  const removeNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const handleBulkCall = () => {
+    if (selectedContacts.length === 0) return;
+    console.log("Calling selected contacts:", selectedContacts);
+    addNotification({
+      type: "success",
+      title: "Call Campaign Started",
+      message: `Starting calls for ${selectedContacts.length} selected contacts. The calling panel will open shortly.`,
+      duration: 4000
+    });
+  };
+
+  const handleBulkEmail = () => {
+    if (selectedContacts.length === 0) return;
+    console.log("Emailing selected contacts:", selectedContacts);
+    addNotification({
+      type: "info",
+      title: "Email Campaign Started",
+      message: `Preparing to send emails to ${selectedContacts.length} selected contacts. The email composer will open shortly.`,
+      duration: 4000
+    });
+  };
+
+  const handleBulkAddTags = () => {
+    if (selectedContacts.length === 0) return;
+    console.log("Adding tags to selected contacts:", selectedContacts);
+    addNotification({
+      type: "warning",
+      title: "Tag Management",
+      message: `Opening tag editor for ${selectedContacts.length} selected contacts. You can add or modify tags for all selected contacts.`,
+      duration: 4000
+    });
   };
 
   return (
@@ -320,19 +394,34 @@ export default function ContactsPage() {
                     {selectedContacts.length} contact{selectedContacts.length !== 1 ? 's' : ''} selected
                   </span>
                   <div className="flex space-x-2">
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={handleBulkCall}
+                      className="hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all duration-200"
+                    >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
                       Call Selected
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={handleBulkEmail}
+                      className="hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-200"
+                    >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                       Email Selected
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={handleBulkAddTags}
+                      className="hover:bg-purple-50 hover:border-purple-300 hover:text-purple-700 transition-all duration-200"
+                    >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                       </svg>
@@ -370,8 +459,77 @@ export default function ContactsPage() {
             </Button>
           </div>
         ) : viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredContacts.map((contact) => (
+          <div>
+            {/* Grid Header with Bulk Selection */}
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    checked={selectedContacts.length === filteredContacts.length && filteredContacts.length > 0}
+                    onChange={handleSelectAllContacts}
+                  />
+                  <label className="text-sm font-medium text-gray-700">
+                    Select All ({filteredContacts.length} contacts)
+                  </label>
+                </div>
+                {selectedContacts.length > 0 && (
+                  <span className="text-sm text-blue-600 font-medium">
+                    {selectedContacts.length} selected
+                  </span>
+                )}
+              </div>
+              {selectedContacts.length > 0 && (
+                <div className="flex space-x-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={handleBulkCall}
+                    className="hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    Call Selected
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={handleBulkEmail}
+                    className="hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Email Selected
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={handleBulkAddTags}
+                    className="hover:bg-purple-50 hover:border-purple-300 hover:text-purple-700 transition-all duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Add Tags
+                  </Button>
+                  <Button
+                    onClick={() => setSelectedContacts([])}
+                    variant="outline"
+                    size="sm"
+                    className="hover:bg-gray-50"
+                  >
+                    Clear Selection
+                  </Button>
+                </div>
+              )}
+            </div>
+            
+            {/* Grid Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredContacts.map((contact) => (
               <div key={contact.id} className="relative group">
                 <input
                   type="checkbox"
@@ -388,6 +546,7 @@ export default function ContactsPage() {
                 />
               </div>
             ))}
+            </div>
           </div>
         ) : (
           <Card className="shadow-sm">
@@ -518,6 +677,188 @@ export default function ContactsPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* Call Control Panel */}
+        <CallControlPanel
+          isVisible={showCallPanel}
+          onClose={handleCloseCallPanel}
+          selectedLead={selectedContactForCall}
+        />
+
+        {/* Email Composer */}
+        <EmailComposer
+          isOpen={showEmailComposer}
+          onClose={handleCloseEmailComposer}
+          selectedLead={selectedContactForEmail}
+          onSend={(emailData: any) => {
+            console.log("Sending email:", emailData);
+            alert(`Email sent to ${emailData.to}!`);
+          }}
+        />
+
+        {/* Edit Contact Modal */}
+        {showEditModal && selectedContactForEdit && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            {/* Blurry Background Overlay */}
+            <div 
+              className="absolute inset-0 bg-white/20 backdrop-blur-md animate-in fade-in duration-300"
+              onClick={handleCloseEditModal}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl max-w-2xl w-full h-[80vh] overflow-hidden border border-white/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 flex flex-col">
+              {/* Header - Fixed */}
+              <div className="p-4 pb-3 border-b border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Edit Contact</h2>
+                      <p className="text-gray-600">{selectedContactForEdit.name}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCloseEditModal}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedContactForEdit.name}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      defaultValue={selectedContactForEdit.email}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      defaultValue={selectedContactForEdit.phone}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Company */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Company <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedContactForEdit.company}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedContactForEdit.title}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+
+                  {/* Status */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Status
+                    </label>
+                    <select
+                      defaultValue={selectedContactForEdit.status}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    >
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="lead">Lead</option>
+                      <option value="customer">Customer</option>
+                    </select>
+                  </div>
+
+                  {/* Notes */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Notes
+                    </label>
+                    <textarea
+                      defaultValue={selectedContactForEdit.notes}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      placeholder="Add notes about this contact..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer - Fixed */}
+              <div className="p-4 pt-3 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm">
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseEditModal}
+                    className="border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => handleSaveContact(selectedContactForEdit)}
+                    className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Notification Container */}
+        <NotificationContainer 
+          notifications={notifications} 
+          onRemove={removeNotification} 
+        />
       </div>
     </DashboardLayout>
   );
