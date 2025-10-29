@@ -1,29 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
-  const { data: session, status } = useSession();
+  const { user, isLoading } = useAuth();
 
   const tabs = [
     { id: "overview", name: "Overview", icon: "📊" },
     { id: "activity", name: "Activity", icon: "📈" },
   ];
 
-  // Get user data from session or use demo data
+  // Get user data from auth context or use demo data
   const userData = {
-    name: session?.user?.name || "Demo User",
-    email: session?.user?.email || "demo@bytes-sales.com",
-    role: "Sales Manager", // This could come from user profile in a real app
-    avatar: session?.user?.name?.charAt(0) || "D",
-    joinDate: "2024-01-15", // This would come from user profile in a real app
-    lastActive: new Date().toISOString(),
+    name: user?.name || "Demo User",
+    email: user?.email || "demo@bytes-sales.com",
+    role: user?.role || "agent",
+    avatar: (user?.name || "D").charAt(0),
+    joinDate: user?.createdAt ? new Date(user.createdAt).toISOString() : "2024-01-15",
+    lastActive: user?.last_login_at ? new Date(user.last_login_at).toISOString() : new Date().toISOString(),
+    agentStatus: user?.agent_status || "OFFLINE",
     stats: {
       totalCalls: 156,
       emailsSent: 89,
@@ -72,8 +74,8 @@ export default function ProfilePage() {
     });
   };
 
-  // Show loading state while session is being fetched
-  if (status === "loading") {
+  // Show loading state while auth is being fetched
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="p-4 sm:p-6">
@@ -140,12 +142,19 @@ export default function ProfilePage() {
                         <div className="flex items-center space-x-3 mb-2">
                           <h2 className="text-2xl font-bold text-gray-900">{userData.name}</h2>
                           <Badge variant="success">{userData.role}</Badge>
+                          {userData.agentStatus && (
+                            <Badge variant="default">{userData.agentStatus}</Badge>
+                          )}
                         </div>
                         <p className="text-gray-600 mb-2">{userData.email}</p>
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <span>Joined {formatDate(userData.joinDate)}</span>
                           <span>•</span>
                           <span>Last active {formatDate(userData.lastActive)}</span>
+                          <span>•</span>
+                          <Link href="/profile/edit" className="text-indigo-600 hover:text-indigo-700 underline">
+                            Edit Profile
+                          </Link>
                         </div>
                       </div>
                     </div>
