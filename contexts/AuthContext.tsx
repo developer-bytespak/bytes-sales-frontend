@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, UserFormData } from '@/types/user';
 import api from '@/lib/api';
+import axios from 'axios';
 
 interface AuthContextType {
   user: User | null;
@@ -34,6 +35,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async () => {
+    
     // Redirect to backend Google OAuth - backend will handle the redirect
     router.push('http://localhost:4000/auth/google');
   };
@@ -41,7 +43,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await api.post('http://localhost:4000/auth/logout');
+     const response = await axios.get('http://localhost:4000/auth/logout', { withCredentials: true });
+
+     console.log(response);
+     console.log(response.data.message);
       setUser(null);
       router.push('/auth/login');
     } catch (error) {

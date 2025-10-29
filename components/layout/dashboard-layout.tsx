@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { navigation } from "@/lib/navigation";
 
 interface DashboardLayoutProps {
@@ -16,25 +14,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarHovered, setSidebarHovered] = useState(false);
-  const { data: session, status } = useSession();
   const pathname = usePathname();
-  const router = useRouter();
-
-  // For demo purposes, we'll show the dashboard regardless of auth status
-  // In a real app, you'd want proper authentication checks
-  const isDemoMode = true; // Always allow demo mode for now
-
-  // Show loading state while checking authentication (only if not in demo mode)
-  if (status === "loading" && !isDemoMode) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-screen bg-gray-50 flex">
@@ -157,23 +137,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 "group flex items-center rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 relative overflow-hidden",
                 sidebarHovered ? "p-2" : "p-2 justify-center"
               )}
-              title={!sidebarHovered ? `${session?.user?.name || "Demo User"} - View Profile` : undefined}
+              title={!sidebarHovered ? `${"Demo User"} - View Profile` : undefined}
             >
               {/* Hover effect overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
               
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
                 <span className="text-xs font-bold text-white group-hover:scale-110 transition-transform duration-300">
-                  {session?.user?.name?.charAt(0) || "D"}
+                  {"D"}
                 </span>
               </div>
               {sidebarHovered && (
                 <div className="ml-2 flex-1 min-w-0 relative z-10">
                   <p className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-700 group-hover:font-semibold transition-all duration-300">
-                    {session?.user?.name || "Demo User"}
+                    {"Demo User"}
                   </p>
                   <p className="text-xs text-gray-500 truncate group-hover:text-gray-600 transition-colors duration-300">
-                    {session?.user?.email || "demo@bytes-sales.com"}
+                    {"demo@bytes-sales.com"}
                   </p>
                   <p className="text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
                     View Profile →
@@ -185,13 +165,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push("/auth/login")}
-                className="text-gray-400 hover:text-red-600 hover:bg-red-50 h-6 w-6 p-0 rounded-lg transition-all duration-300 hover:scale-110"
+                className="text-gray-400 hover:text-red-600 hover:bg-red-50 h-6 w-6 p-0 rounded-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Sign Out"
               >
-                <svg className="w-3 h-3 transition-transform duration-300 hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+                {/* {isLoggingOut ? (
+                  <svg className="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                ) : (
+                  <svg className="w-3 h-3 transition-transform duration-300 hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                )} */}
               </Button>
             </div>
           </div>

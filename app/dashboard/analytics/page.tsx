@@ -186,7 +186,7 @@ export default function AnalyticsPage() {
               <Button
                 key={range.value}
                 onClick={() => setTimeRange(range.value)}
-                variant={timeRange === range.value ? "default" : "outline"}
+                variant={timeRange === range.value ? "primary" : "outline"}
                 size="sm"
               >
                 {range.label}

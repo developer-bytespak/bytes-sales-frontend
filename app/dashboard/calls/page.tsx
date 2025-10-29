@@ -511,7 +511,7 @@ export default function CallsPage() {
                       </label>
                       <div className="mt-1">
                         <Badge variant={outcomeColors[selectedCallForDetails.outcome as keyof typeof outcomeColors]}>
-                          {selectedCallForDetails.outcome.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          {selectedCallForDetails.outcome.replace('-', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                         </Badge>
                       </div>
                     </div>

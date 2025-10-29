@@ -10,8 +10,24 @@ import { CallControlPanel } from "@/components/call/call-control-panel";
 import { EmailComposer } from "@/components/email/email-composer";
 import { NotificationContainer, NotificationItem } from "@/components/ui/notification";
 
+// Import Contact type from the contact card component
+interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  title: string;
+  status: "active" | "inactive" | "lead" | "customer";
+  lastContact: string;
+  totalDeals: number;
+  totalValue: number;
+  tags: string[];
+  notes: string;
+}
+
 // Mock data - in real app this would come from API
-const mockContacts = [
+const mockContacts: Contact[] = [
   {
     id: "1",
     name: "Sarah Johnson",

@@ -12,10 +12,10 @@ const userFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   googleId: z.string().optional(),
-  role: z.enum(['agent', 'admin']).default('agent'),
+  role: z.enum(['agent', 'admin']),
   agent_status: z.enum(['BREAK', 'ON_CALL', 'OFFLINE', 'AVAILABLE']).optional(),
   agent_extension: z.string().optional(),
-  is_active: z.boolean().default(true),
+  is_active: z.boolean(),
 });
 
 type UserFormSchemaType = z.infer<typeof userFormSchema>;
@@ -40,7 +40,7 @@ export function UserForm({ onSubmit, defaultValues }: UserFormProps) {
       name: user?.name || '',
       email: user?.email || '',
       googleId: user?.googleId || undefined,
-      role: user?.role || 'agent',
+      role: (user?.role as UserRole) || 'agent',
       agent_status: user?.agent_status || undefined,
       agent_extension: user?.agent_extension || undefined,
       is_active: user?.is_active ?? true,

@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
 
   const tabs = [
     { id: "overview", name: "Overview", icon: "📊" },
@@ -72,6 +72,9 @@ export default function ProfilePage() {
       month: "long",
       day: "numeric"
     });
+  };
+  const handleLogout = async () => {
+    await logout();
   };
 
   // Show loading state while auth is being fetched
@@ -155,6 +158,19 @@ export default function ProfilePage() {
                           <Link href="/profile/edit" className="text-indigo-600 hover:text-indigo-700 underline">
                             Edit Profile
                           </Link>
+                        </div>
+                        <div className="mt-4">
+                          <Button
+                            onClick={handleLogout}
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Sign Out
+                          </Button>
                         </div>
                       </div>
                     </div>
